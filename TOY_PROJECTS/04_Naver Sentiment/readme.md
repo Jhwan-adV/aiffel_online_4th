@@ -10,7 +10,40 @@
 
 - [O] 2.주석을 보고 작성자의 코드가 이해되었나요?<br>
  -네 주석을 통하여 어떤 의도로 코드를 작성하였는지 판별하기 쉬웠습니다.
+```
+#코드 길이로 인하여 일부만 발췌
+def load_data(train_data, test_data, num_words=10000):
+    
+    # 훈련 데이터의 중복&결측 데이터 제거
+    train_data.drop_duplicates(subset=['document'], inplace=True) 
+    train_data = train_data.dropna(how = 'any') 
+    
+    # 훈련 데이터 토큰화 및 불용어 제거
+    X_train = []
+    for sentence in train_data['document']:
+        temp_X = tokenizer.morphs(sentence) 
+        temp_X = [word for word in temp_X if not word in stopwords] 
+        X_train.append(temp_X)
 
+    # 사전 word_to_index 구성
+    words = np.concatenate(X_train).tolist()
+    counter = Counter(words)
+    counter = counter.most_common(10000-4)
+    vocab = ['<PAD>', '<BOS>', '<UNK>', ''] + [key for key, _ in counter]
+    word_to_index = {word:index for index, word in enumerate(vocab)}
+    
+    # 단어 텍스트 리스트를 사전 인덱스 스트링으로 변환
+    def wordlist_to_indexlist(wordlist):
+        return [word_to_index[word] if word in word_to_index else word_to_index[''] for word in wordlist]
+    
+    # 정제된 X_train, X_test 데이터
+    X_train = list(map(wordlist_to_indexlist, X_train))
+    X_test = list(map(wordlist_to_indexlist, X_test))
+    
+    # 각각 X_train, y_train, X_test, y_test, word_to_index → 전처리 후 데이터 반환   
+    return X_train, np.array(list(train_data['label'])), X_test, np.array(list(test_data['label'])), word_to_index
+    
+```
 - ['X'] 3.코드가 에러를 유발할 가능성이 있나요?<br>
  -아니요 순차적으로 실행시킨다면 에러가 발생하지않았습니다.
  
