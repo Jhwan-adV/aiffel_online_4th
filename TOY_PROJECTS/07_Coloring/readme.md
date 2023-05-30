@@ -1,5 +1,5 @@
 # AIFFEL Campus Online 4th Code Peer Review Templete
-- 코더 : Kim Jaehwan
+- 코더 : 김재환
 - 리뷰어 : 
 
 # PRT(PeerReviewTemplate)
